@@ -1,4 +1,6 @@
-//Contrato responsável pelos causadores de dano.
+/// <summary>
+/// Contrato para qualquer entidade que possa causar "dano".
+/// </summary>
 public interface IDamageDealer
 {
     void Damage();

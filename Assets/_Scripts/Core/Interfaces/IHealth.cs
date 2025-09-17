@@ -1,4 +1,6 @@
-//Contrato responsável pela Saúde. Tudo que possuir saúde precisa desse contrato.
+/// <summary>
+/// Contrato para qualquer entidade que possa receber e perder "vida".
+/// </summary>
 public interface IHealth
 {
     int CurrentHealth { get; }

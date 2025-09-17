@@ -22,4 +22,10 @@ public class mock : MonoBehaviour, IHealth, IDamageDealer
     {
         throw new System.NotImplementedException();
     }
+
+    public void Start()
+    {
+        var damage = new Damage(10, DamageType.Normal);
+        Debug.Log(damage);
+    }
 }
