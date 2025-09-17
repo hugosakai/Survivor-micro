@@ -1,24 +1,22 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-public class mock : MonoBehaviour, IHealth, IDamageDealer
+public class CombatMock : MonoBehaviour, IHealth, IDamageDealer
 {
     public int CurrentHealth => throw new System.NotImplementedException();
 
     public int MaxHealth => throw new System.NotImplementedException();
 
-    public void Damage()
+    public void Damage(int amount)
     {
         throw new System.NotImplementedException();
     }
 
-    public void Heal()
+    public void Heal(int amount)
     {
         throw new System.NotImplementedException();
     }
 
-    public void TakeDamage()
+    public void TakeDamage(int amount)
     {
         throw new System.NotImplementedException();
     }
@@ -26,6 +24,6 @@ public class mock : MonoBehaviour, IHealth, IDamageDealer
     public void Start()
     {
         var damage = new Damage(10, DamageType.Normal);
-        Debug.Log(damage);
+        Debug.Log(damage.Amount.ToString());
     }
 }
