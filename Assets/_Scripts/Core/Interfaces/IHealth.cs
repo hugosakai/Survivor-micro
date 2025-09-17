@@ -1,11 +1,12 @@
+// _Scripts/Core/Interfaces/IHealth.cs
 /// <summary>
 /// Contrato para qualquer entidade que possa receber e perder "vida".
 /// </summary>
 public interface IHealth
 {
-    int CurrentHealth { get; }
-    int MaxHealth { get; }
+    float CurrentHealth { get; }
+    float MaxHealth { get; }
 
-    void TakeDamage(int amount);
-    void Heal(int amount);
+    void TakeDamage(Damage damage);
+    void Heal(float amount);
 }

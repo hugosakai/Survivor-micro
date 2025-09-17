@@ -1,29 +1,33 @@
+// _Scripts/Gameplay/Combat/CombatMock.cs
 using UnityEngine;
 
 public class CombatMock : MonoBehaviour, IHealth, IDamageDealer
 {
-    public int CurrentHealth => throw new System.NotImplementedException();
+    [SerializeField] private HealthConfig healthConfig;
+    public float CurrentHealth => throw new System.NotImplementedException();
 
-    public int MaxHealth => throw new System.NotImplementedException();
+    public float MaxHealth => throw new System.NotImplementedException();
 
-    public void Damage(int amount)
+    public void ApplyDamage(Damage damage)
     {
         throw new System.NotImplementedException();
     }
 
-    public void Heal(int amount)
+    public void Heal(float amount)
     {
         throw new System.NotImplementedException();
     }
 
-    public void TakeDamage(int amount)
+    public void TakeDamage(Damage damage)
     {
         throw new System.NotImplementedException();
     }
 
     public void Start()
     {
-        var damage = new Damage(10, DamageType.Normal);
+        var damage = new Damage(10.0f, DamageType.Normal, DamageSource.Enemy);
         Debug.Log(damage.Amount.ToString());
+
+        Debug.Log(healthConfig.MaxHealth);
     }
 }
