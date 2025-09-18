@@ -20,7 +20,7 @@ public class CombatMock : MonoBehaviour, IHealth, IDamageDealer
         throw new System.NotImplementedException();
     }
 
-    public void TakeDamage(Damage damage)
+    public bool TakeDamage(Damage damage)
     {
         throw new System.NotImplementedException();
     }

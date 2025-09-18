@@ -14,11 +14,11 @@ public class Health : MonoBehaviour, IHealth
     float invulnUntil = 0f;           // até quando está invulnerável
     float invulnFeedbackUntil = 0f;   // até quando o feedback está “silenciado”
 
-    public Action<float, float> OnHealthChanged;    //(current, max)
-    public Action<Damage> OnDamaged;     //(damage)
-    public Action<Heal> OnHealed;      //(heal)
-    public Action<Damage, float> OnInvulnerableHit;     //(damage, tempo restante de invulnerabilidade)
-    public Action OnDied;
+    public event Action<float, float> OnHealthChanged;    //(current, max)
+    public event Action<Damage> OnDamaged;     //(damage)
+    public event Action<Heal> OnHealed;      //(heal)
+    public event Action<Damage, float> OnInvulnerableHit;     //(damage, tempo restante de invulnerabilidade)
+    public event Action OnDied;
     public float CurrentHealth { get; private set; }
 
     public float MaxHealth { get; private set; }
@@ -34,9 +34,9 @@ public class Health : MonoBehaviour, IHealth
         OnHealthChanged?.Invoke(CurrentHealth, MaxHealth);
     }
 
-    public void TakeDamage(Damage damage)
+    public bool TakeDamage(Damage damage)
     {
-        if (_isDead) return;
+        if (_isDead) return false;
 
         // 1) checar i-frames
         if (Time.time < invulnUntil)
@@ -48,7 +48,7 @@ public class Health : MonoBehaviour, IHealth
                 OnInvulnerableHit?.Invoke(damage, remaining);     // dispara SFX/FX/UI
                 invulnFeedbackUntil = Time.time + invulnFeedbackCooldown; // trava feedback por um curto período
             }
-            return; // ignora o dano
+            return false; // ignora o dano
         }
 
         var damageAmount = damage.Amount;
@@ -66,6 +66,7 @@ public class Health : MonoBehaviour, IHealth
         {
             Dead();
         }
+        return true;
     }
 
     public void Dead()

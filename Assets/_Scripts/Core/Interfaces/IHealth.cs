@@ -7,6 +7,6 @@ public interface IHealth
     float CurrentHealth { get; }
     float MaxHealth { get; }
 
-    void TakeDamage(Damage damage);
+    bool TakeDamage(Damage damage);
     void Heal(Heal amount);
 }
