@@ -8,5 +8,5 @@ public interface IHealth
     float MaxHealth { get; }
 
     void TakeDamage(Damage damage);
-    void Heal(float amount);
+    void Heal(Heal amount);
 }

@@ -12,3 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2b2d76957a3a8da4cb758c4a4152d170, type: 3}
   m_Name: Tank
   m_EditorClassIdentifier: 
+  _maxHealth: 20
+  _regenPerSecond: 2
+  _invulnerabilityAfterDmg: 0.3

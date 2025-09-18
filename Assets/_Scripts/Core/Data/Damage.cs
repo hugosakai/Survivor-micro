@@ -11,6 +11,11 @@ public readonly struct Damage
     {
         Amount = Math.Max(0, amount);
         Type = type;
+        Source = source;
     }
 
+    public override string ToString()
+    {
+        return $"Damage(Amount={Amount}, Type={Type}, Source={Source})";
+    }
 }
