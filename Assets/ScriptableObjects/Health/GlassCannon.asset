@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: GlassCannon
   m_EditorClassIdentifier: 
   _maxHealth: 5
-  _regenPerSecond: 0.5
+  _regenPerSecond: 0
   _invulnerabilityAfterDmg: 0.3

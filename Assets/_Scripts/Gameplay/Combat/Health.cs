@@ -5,7 +5,7 @@ using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
 
-public class Health : MonoBehaviour, IHealth
+public class Health : MonoBehaviour, IHealth, ITickable
 {
     [SerializeField] private HealthConfig _healthConfig;
     [SerializeField] float invulnFeedbackCooldown = 0.15f; // em s
@@ -13,6 +13,7 @@ public class Health : MonoBehaviour, IHealth
     private float _invulnDuration;      // tempo total de invulnerabilidade
     float invulnUntil = 0f;           // até quando está invulnerável
     float invulnFeedbackUntil = 0f;   // até quando o feedback está “silenciado”
+    float regenPerSecond;
 
     public event Action<float, float> OnHealthChanged;    //(current, max)
     public event Action<Damage> OnDamaged;     //(damage)
@@ -35,7 +36,7 @@ public class Health : MonoBehaviour, IHealth
     }
 
     public bool TakeDamage(Damage damage)
-    {        
+    {
         if (_isDead) return false;
 
         // 1) checar i-frames
@@ -75,7 +76,10 @@ public class Health : MonoBehaviour, IHealth
         _isDead = true;
         invulnUntil = 0;
         OnDied?.Invoke();
-        
+
+        if (TickScheduler.Instance != null)
+            TickScheduler.Instance.Unregister(this);
+
     }
 
     void OnEnable()
@@ -91,6 +95,30 @@ public class Health : MonoBehaviour, IHealth
 
         _invulnDuration = _healthConfig.InvulnerabilityAfterDmg;
 
+        regenPerSecond = _healthConfig.RegenPerSecond;
+
         OnHealthChanged?.Invoke(CurrentHealth, MaxHealth);
+
+        if (TickScheduler.Instance != null)
+            TickScheduler.Instance.Register(this);
+    }
+
+    public void Tick(float deltaTime)
+    {
+        if (_isDead) return; 
+        if (CurrentHealth >= MaxHealth) return;
+
+        float before = CurrentHealth;
+        CurrentHealth += regenPerSecond * deltaTime;
+        if (CurrentHealth > MaxHealth) CurrentHealth = MaxHealth;
+
+        if (CurrentHealth != before)            // ← evita spam
+            OnHealthChanged?.Invoke(CurrentHealth, MaxHealth);
+    }
+
+    void OnDisable()
+    {
+        if (TickScheduler.Instance != null)
+            TickScheduler.Instance.Unregister(this);
     }
 }
