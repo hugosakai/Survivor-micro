@@ -30,10 +30,11 @@ public class Hitbox2D : MonoBehaviour
     {
         if (!Active) return;
         if (((1 << collider.gameObject.layer) & _targetMask.value) == 0) return;
-
         var target = collider.gameObject.GetComponentInParent<IHealth>();
         if (target != null)
         {
+            Debug.Log("trigger enter 2d");
+            
             OnHitCandidate?.Invoke(target, collider.gameObject, collider);
         }
     }

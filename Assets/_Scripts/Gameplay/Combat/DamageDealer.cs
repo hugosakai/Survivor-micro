@@ -18,7 +18,7 @@ public class DamageDealer : MonoBehaviour, IDamageSource, IOwnerProvider
 
     [Header("Cap de alvos")]
     [SerializeField] int _maxTargets = -1;      //-1 sem limite
-    private Hitbox2D _hitbox2D;
+    [SerializeField] private Hitbox2D _hitbox2D;
     bool _windowOpen;
     HashSet<IHealth> _hitThisWindow = new();
 
@@ -30,12 +30,19 @@ public class DamageDealer : MonoBehaviour, IDamageSource, IOwnerProvider
 
     public Transform OwnerRoot => _ownerRoot;
 
+    public bool WindowOpen { get => _windowOpen; set => _windowOpen = value; }
+
     public event Action<IHealth, Vector3> OnDealt;
     public event Action<IHealth, Vector3> OnBlocked;
+    public event Action WindowOpened;
+    public event Action WindowClosed;
 
     private void Awake()
     {
-        _hitbox2D = GetComponent<Hitbox2D>();
+        if (_hitbox2D == null)
+        {
+            _hitbox2D = GetComponentInChildren<Hitbox2D>();
+        }
         if (_hitbox2D == null) Debug.LogError("Hitbox2D não encontrado.");
         if (_teamRelationsAsset == null) Debug.LogError("TeamRelationsSO não encontrado");
 
@@ -49,6 +56,8 @@ public class DamageDealer : MonoBehaviour, IDamageSource, IOwnerProvider
     {
         if (_hitbox2D == null) return;
         _hitbox2D.OnHitCandidate += HitTarget;
+
+        // OpenWindow();   //Inicialmente ele vai abrir a janela no enable e fechar no disable
     }
 
     private void HitTarget(IHealth target, GameObject targetGO, Collider2D collider)
@@ -114,24 +123,30 @@ public class DamageDealer : MonoBehaviour, IDamageSource, IOwnerProvider
     private void OnDisable()
     {
         if (_hitbox2D) _hitbox2D.OnHitCandidate -= HitTarget;
+
+        CloseWindow();  //Temporário
     }
 
     public void OpenWindow()
     {
         _hitThisWindow.Clear();
         _windowOpen = true;
-        
+
         if (_hitbox2D)
             _hitbox2D.SetActive(true);
+
+        WindowOpened?.Invoke();
     }
 
     public void CloseWindow()
     {
         _windowOpen = false;
         _hitThisWindow.Clear();
-        
+
         if (_hitbox2D)
             _hitbox2D.SetActive(false);
+
+        WindowClosed?.Invoke();
     }
 
 
@@ -148,9 +163,14 @@ public class DamageDealer : MonoBehaviour, IDamageSource, IOwnerProvider
     {
         _hitThisWindow.Clear();
         _windowOpen = true;
-        _hitbox2D.SetActive(true);
+        
+        if (_hitbox2D)
+            _hitbox2D.SetActive(true);
+
+        WindowOpened?.Invoke();
+
         StartCoroutine(StartAfterSeconds(seconds, () => CloseWindow()));
-         }
+    }
 
     private IEnumerator StartAfterSeconds(float seconds, Action callback)
     {
@@ -158,4 +178,18 @@ public class DamageDealer : MonoBehaviour, IDamageSource, IOwnerProvider
         callback?.Invoke();
     }
 
+    public void SetRoot(Transform t)
+    {
+        _ownerRoot = t;
+    }
+
+    public void SetTeamId(int id)
+    {
+        _teamId = id;
+    }
+
+    public void SetTeamRelations(TeamRelationsSO team)
+    {
+        _teamRelationsAsset = team;
+    }
 }

@@ -35,7 +35,7 @@ public class Health : MonoBehaviour, IHealth
     }
 
     public bool TakeDamage(Damage damage)
-    {
+    {        
         if (_isDead) return false;
 
         // 1) checar i-frames
@@ -75,6 +75,7 @@ public class Health : MonoBehaviour, IHealth
         _isDead = true;
         invulnUntil = 0;
         OnDied?.Invoke();
+        
     }
 
     void OnEnable()
